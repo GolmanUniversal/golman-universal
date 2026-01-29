@@ -1,4 +1,10 @@
 {
   "cleanUrls": true,
-  "trailingSlash": false
+  "trailingSlash": false,
+  "redirects": [
+    { "source": "/services/maintenance", "destination": "/services/consulting", "permanent": true },
+    { "source": "/services/tree-care", "destination": "/services/contracting", "permanent": true },
+    { "source": "/services/pruning", "destination": "/services/design", "permanent": true },
+    { "source": "/services/landscaping", "destination": "/services/development", "permanent": true }
+  ]
 }
