@@ -2,13 +2,55 @@
   "cleanUrls": true,
   "trailingSlash": false,
   "redirects": [
-    { "source": "/services/consulting", "destination": "/services/structuring", "permanent": true },
-    { "source": "/services/contracting", "destination": "/services", "permanent": true },
-    { "source": "/services/design", "destination": "/services/strategy", "permanent": true },
-    { "source": "/services/development", "destination": "/services/representation", "permanent": true },
-    { "source": "/services/maintenance", "destination": "/services/structuring", "permanent": true },
-    { "source": "/services/tree-care", "destination": "/services", "permanent": true },
-    { "source": "/services/pruning", "destination": "/services/strategy", "permanent": true },
-    { "source": "/services/landscaping", "destination": "/services/representation", "permanent": true }
+    {
+      "source": "/services/consulting",
+      "destination": "/services/structuring",
+      "permanent": true
+    },
+    {
+      "source": "/services/contracting",
+      "destination": "/services",
+      "permanent": true
+    },
+    {
+      "source": "/services/design",
+      "destination": "/services/strategy",
+      "permanent": true
+    },
+    {
+      "source": "/services/development",
+      "destination": "/services/representation",
+      "permanent": true
+    },
+    {
+      "source": "/services/maintenance",
+      "destination": "/services/structuring",
+      "permanent": true
+    },
+    {
+      "source": "/services/tree-care",
+      "destination": "/services",
+      "permanent": true
+    },
+    {
+      "source": "/services/pruning",
+      "destination": "/services/strategy",
+      "permanent": true
+    },
+    {
+      "source": "/services/landscaping",
+      "destination": "/services/representation",
+      "permanent": true
+    },
+    {
+      "source": "/commercial",
+      "destination": "/services",
+      "permanent": true
+    },
+    {
+      "source": "/residential",
+      "destination": "/services",
+      "permanent": true
+    }
   ]
 }
