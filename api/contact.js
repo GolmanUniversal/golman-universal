@@ -8,8 +8,52 @@
 // Resend needs golmanuniversal.com verified before CONTACT_FROM can use that domain.
 // Until then, set CONTACT_FROM="Golman Universal <onboarding@resend.dev>" and
 // CONTACT_TO to the Resend account owner's address for testing.
+//
+// AGENT INTAKE (optional, best-effort): after the direct email to Alex (the
+// guaranteed record) succeeds, we additionally hand the submission to the golman AI
+// agent, which sends the visitor an instant acknowledgment from
+// hello@golmanuniversal.com. Gated on AGENT_INTAKE_SECRET — if it's unset, the agent
+// call is skipped entirely and the form behaves exactly as before. The direct email
+// is never affected, so the form can never silently fail.
+//   Optional env:  AGENT_INTAKE_SECRET  (the agent's CHAT_WEBHOOK_SECRET; the gate)
+//                  AGENT_INTAKE_URL     (default https://golman-agent.vercel.app/api/intake)
+// We pass notifyOwner:false so Alex isn't double-notified — the direct email already
+// reaches him; the agent only handles the visitor-facing auto-reply.
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+// Best-effort hand-off to the AI agent for the visitor acknowledgment. Never throws;
+// failures are logged and swallowed so the form response is unaffected. A short
+// timeout keeps a slow/down agent from hanging the form.
+async function notifyAgent({ name, email, category, message, subject }) {
+  const secret = process.env.AGENT_INTAKE_SECRET;
+  if (!secret) return; // not configured → skip silently (form behaves as before)
+  const url = process.env.AGENT_INTAKE_URL || 'https://golman-agent.vercel.app/api/intake';
+
+  const text = [
+    '[GU-INTAKE v1]',
+    `NAME: ${name}`,
+    `EMAIL: ${email}`,
+    `CATEGORY: ${category || '(none)'}`,
+    `MESSAGE: ${message}`,
+  ].join('\n');
+
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 7000);
+  try {
+    const r = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-webhook-secret': secret },
+      body: JSON.stringify({ from: `${name} <${email}>`, subject, text, notifyOwner: false }),
+      signal: controller.signal,
+    });
+    if (!r.ok) console.error('contact: agent intake non-ok', r.status);
+  } catch (err) {
+    console.error('contact: agent intake error', err.name === 'AbortError' ? 'timeout' : err.message);
+  } finally {
+    clearTimeout(timer);
+  }
+}
 
 // Strip CR/LF/control chars so user input can't inject email headers.
 const oneLine = (v) =>
@@ -78,6 +122,10 @@ module.exports = async (req, res) => {
       console.error('contact: resend failed', r.status, detail);
       return res.status(502).json({ error: 'send_failed' });
     }
+    // Direct email to Alex is sent (the guaranteed record). Best-effort: have the AI
+    // agent send the visitor an instant acknowledgment. Awaited so the serverless
+    // function doesn't freeze mid-call, but it never affects this 200 response.
+    await notifyAgent({ name, email, category, message, subject });
     return res.status(200).json({ ok: true });
   } catch (err) {
     console.error('contact: send error', err);
