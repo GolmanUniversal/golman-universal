@@ -16,7 +16,7 @@
 // call is skipped entirely and the form behaves exactly as before. The direct email
 // is never affected, so the form can never silently fail.
 //   Optional env:  AGENT_INTAKE_SECRET  (the agent's CHAT_WEBHOOK_SECRET; the gate)
-//                  AGENT_INTAKE_URL     (default https://golman-agent.vercel.app/api/intake)
+//                  AGENT_INTAKE_URL     (default https://agent.golmanuniversal.com/api/intake)
 // We pass notifyOwner:false so Alex isn't double-notified — the direct email already
 // reaches him; the agent only handles the visitor-facing auto-reply.
 
@@ -28,7 +28,7 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 async function notifyAgent({ name, email, category, message, subject }) {
   const secret = process.env.AGENT_INTAKE_SECRET;
   if (!secret) return; // not configured → skip silently (form behaves as before)
-  const url = process.env.AGENT_INTAKE_URL || 'https://golman-agent.vercel.app/api/intake';
+  const url = process.env.AGENT_INTAKE_URL || 'https://agent.golmanuniversal.com/api/intake';
 
   const text = [
     '[GU-INTAKE v1]',

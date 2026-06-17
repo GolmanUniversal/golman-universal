@@ -8,7 +8,7 @@
 // production is safe even before the secret is configured.
 //
 //   Optional env:  CHAT_WEBHOOK_SECRET  (must match the agent's; the gate)
-//                  AGENT_CHAT_URL       (default https://golman-agent.vercel.app/api/chat)
+//                  AGENT_CHAT_URL       (default https://agent.golmanuniversal.com/api/chat)
 
 const FALLBACK = "Chat isn't available right now — please use the contact form at /contact and Alex will follow up personally.";
 
@@ -31,7 +31,7 @@ module.exports = async (req, res) => {
     // Not configured yet — degrade gracefully rather than show a broken widget.
     return res.status(200).json({ reply: FALLBACK });
   }
-  const url = process.env.AGENT_CHAT_URL || 'https://golman-agent.vercel.app/api/chat';
+  const url = process.env.AGENT_CHAT_URL || 'https://agent.golmanuniversal.com/api/chat';
 
   const b = parseBody(req);
   const sessionId = typeof b.sessionId === 'string' ? b.sessionId : '';
