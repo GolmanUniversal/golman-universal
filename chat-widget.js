@@ -101,7 +101,7 @@
     });
 
     input.addEventListener('keydown', function (ev) {
-      if (ev.key === 'Enter' && !ev.shiftKey) { ev.preventDefault(); form.requestSubmit(); }
+      if (ev.key === 'Enter' && !ev.shiftKey) { ev.preventDefault(); if (form.requestSubmit) form.requestSubmit(); else form.dispatchEvent(new Event('submit', {cancelable: true})); }
     });
   }
 
