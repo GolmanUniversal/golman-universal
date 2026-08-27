@@ -1,5 +1,6 @@
 User-agent: *
 Allow: /
+Disallow: /template-info/
 
 Sitemap: https://golmanuniversal.com/sitemap.xml
 # LLM briefing: https://golmanuniversal.com/llms.txt
